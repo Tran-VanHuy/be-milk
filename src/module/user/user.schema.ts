@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { AddressEntity } from "../address/address.schema";
+import mongoose, { Document, Types } from "mongoose";
+
 
 @Schema()
-
 export class UserEntity {
 
     @Prop({required: true})
@@ -15,6 +17,9 @@ export class UserEntity {
 
     @Prop({required: true})
     phone: string;
+
+    @Prop({ type: [{ type: AddressEntity, ref: AddressEntity.name }] })
+    address:  AddressEntity[]
 }
 
 export const UserTableName = "users";

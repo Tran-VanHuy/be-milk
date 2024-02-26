@@ -1,5 +1,5 @@
-import { Body, Controller, Get, HttpCode, Post, VERSION_NEUTRAL } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Get, HttpCode, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 import { UserDto } from "./dto/user.dto";
 
@@ -28,5 +28,19 @@ export class UserController {
         const res = await this.userService.create(body);
         return res;
     }
-    
+
+    @ApiQuery({name: "userId", type: String, required: true})
+    @HttpCode(200)
+    @Get("/user/findOne")
+    async findOne(@Query("userId") userId: string){
+        return this.userService.findOne(userId);
+    }
+    @ApiOperation({summary: "Thêm địa chỉ"})
+    @HttpCode(200)
+    @Post("/user/address")
+    async createAddress(@Body() body: UserDto){
+
+        const res = await this.userService.createAddress(body);
+        return res;
+    }
 }
