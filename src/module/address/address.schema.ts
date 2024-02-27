@@ -1,10 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Types } from "mongoose";
 
-@Schema({_id: true})
+@Schema()
 export class AddressEntity{
-    @Prop({type: Types.ObjectId})
-    _id: Types.ObjectId;
+  
 
     @Prop({required: true, type: String})
     name: string;
@@ -26,6 +24,10 @@ export class AddressEntity{
 
     @Prop({type:Boolean, required: false, default: false})
     default: boolean
+
+    @Prop({type: String, required: false})
+    userId: string
+
 }
 
 export const AddressSchema = SchemaFactory.createForClass(AddressEntity);

@@ -35,12 +35,4 @@ export class UserController {
     async findOne(@Query("userId") userId: string){
         return this.userService.findOne(userId);
     }
-    @ApiOperation({summary: "Thêm địa chỉ"})
-    @HttpCode(200)
-    @Post("/user/address")
-    async createAddress(@Body() body: UserDto){
-
-        const res = await this.userService.createAddress(body);
-        return res;
-    }
 }

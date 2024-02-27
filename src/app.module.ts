@@ -6,6 +6,7 @@ import { CategoryProductsModule } from './module/category-products/category-prod
 import { ProductsModule } from './module/products/products.module';
 import { AddressEntity } from './module/address/address.schema';
 import { UploadModule } from './module/upload/upload.module';
+import { AddressModule } from './module/address/address.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -16,7 +17,7 @@ import { UploadModule } from './module/upload/upload.module';
   UserModule,
   CategoryProductsModule,
   ProductsModule,
-  AddressEntity,
+  AddressModule,
   UploadModule
 ]
 })

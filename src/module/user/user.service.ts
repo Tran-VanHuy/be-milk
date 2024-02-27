@@ -4,6 +4,7 @@ import { UserDocument, UserEntity } from "./user.schema";
 import { Model } from "mongoose";
 import { UserDto } from "./dto/user.dto";
 import { response } from "src/response/response";
+import { AddressEntity } from "../address/address.schema";
 
 @Injectable()
 export class UserService {
@@ -14,7 +15,10 @@ export class UserService {
 
         try {
             
-            const res = await this.userModel.findOne({userId: userId});
+            const res = await this.userModel.findOne({userId: userId}).populate({
+                path: 'address',
+                model: AddressEntity.name,
+            });;
             return response(200, res);
         } catch (error) {
             return response(500, error);
@@ -29,28 +33,13 @@ export class UserService {
                 return response(200, "Đã tồn tại");
             } else {
 
-                const body = { ...data };
+                const body: UserDto = { ...data, address: []};
                 const res = await this.userModel.create(body);
                 return response(200, res);
             }
         } catch (error) {
 
             return response(500, error);
-        }
-    }
-
-    async createAddress(data: UserDto){
-        
-        try {
-
-            const res = await this.userModel.findOneAndUpdate({userId: data.userId}, {address: data.address});
-            if(res){
-                return response(200, data)
-            } else {
-                throw new HttpException('Không tồn tại user', HttpStatus.BAD_REQUEST);
-            }
-        } catch (error) {
-            throw new HttpException(error, HttpStatus.BAD_REQUEST);
         }
     }
 }
