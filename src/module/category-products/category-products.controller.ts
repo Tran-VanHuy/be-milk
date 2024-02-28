@@ -1,6 +1,7 @@
-import { Controller, Get, HttpCode, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Post, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { CategoryProductsService } from "./category-products.service";
+import { CategoryProductDto } from "./dto/category-product.dto";
 
 @ApiTags("Danh mục sản phẩm")
 @Controller({
@@ -16,6 +17,13 @@ export class CategoryProductsController {
     @HttpCode(200)
     async getAll(){
 
-        return "hello";
+        return await this.categoryProductsService.getAll()
+    }
+
+    @Post("/category-products")
+    @HttpCode(200)
+    async create(@Body() body: CategoryProductDto){
+
+        return this.categoryProductsService.create(body)
     }
 }

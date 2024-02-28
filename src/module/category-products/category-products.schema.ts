@@ -4,13 +4,16 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 export class CategoryProductsEntity {
 
-    @Prop({require: true})
+    @Prop({required: true})
     name: string
 
+    @Prop({required: false, default: true})
     status: boolean
 
+    @Prop({required: false})
     createdAt: string
 
+    @Prop({required: false})
     updatedAt: string
 }
 

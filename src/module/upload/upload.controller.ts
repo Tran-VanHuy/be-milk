@@ -45,7 +45,8 @@ export class UploadController {
         if (!file) {
             throw new BadRequestException("Không thành công")
         } else {
-            return response(200, file)
+ 
+            return response(200, {...file, path: `http://localhost:3001/v1/file/${file.filename}`})
         }
     }
 
