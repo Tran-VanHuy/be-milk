@@ -63,8 +63,11 @@ export class InfoProducts extends Document {
     }})
     _id: string
 
-    @Prop({required: true})
+    @Prop({required: false})
     ms: string
+
+    @Prop({required: false})
+    sz: string
     
     @Prop({type: [ItemMS], ref: ItemMS.name})
     itemMS: Array<ItemMS>

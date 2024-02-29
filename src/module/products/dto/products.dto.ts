@@ -52,6 +52,9 @@ class InfoProducts {
     @ApiProperty({ type: String })
     ms: string
 
+    @ApiProperty({ type: String })
+    sz: string
+
     @ApiProperty({ type: [ItemMS] })
     itemMS: [ItemMS]
 

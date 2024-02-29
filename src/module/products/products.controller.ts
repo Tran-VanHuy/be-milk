@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Param, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { ProductsService } from "./products.service";
 import { ProductsDto } from "./dto/products.dto";
@@ -33,4 +33,10 @@ export class ProductsController {
         const res = await this.productsService.create(body);
         return res;
     }
+
+    @Get('/products/:_id')
+    update(@Param('_id') _id: string) {
+        return this.productsService.findById(_id);
+    }
+
 }
