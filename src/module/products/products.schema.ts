@@ -9,105 +9,114 @@ export class ListImage extends Document {
 
 @Schema()
 export class ItemSZ extends Document {
-    @Prop({ type: String, default: function genUUID() {
-        return uuidv4()
-    }})
+    @Prop({
+        type: String, default: function genUUID() {
+            return uuidv4()
+        }
+    })
     _id: string
 
-    @Prop({required: false, type: String})
+    @Prop({ required: false, type: String })
     name: string
 
-    @Prop({required: false, type: String})
+    @Prop({ required: false, type: String })
     image: string
 
-    @Prop({required: false, type: Number})
+    @Prop({ required: false, type: Number })
     price: number
 
-    @Prop({required: false, type: Number})
+    @Prop({ required: false, type: Number })
     discount: number
 
-    @Prop({required: false, type: Number})
+    @Prop({ required: false, type: Number })
     quantity: number
 }
 
 @Schema()
 export class ItemMS extends Document {
-    @Prop({ type: String, default: function genUUID() {
-        return uuidv4()
-    }})
+    @Prop({
+        type: String, default: function genUUID() {
+            return uuidv4()
+        }
+    })
     _id: string
 
-    @Prop({required: false, type: String})
+    @Prop({ required: false, type: String })
     name: string
 
-    @Prop({required: false, type: String})
+    @Prop({ required: false, type: String })
     image: string
 
-    @Prop({required: false, type: [ItemSZ], ref: ItemSZ.name})
+    @Prop({ required: false, type: [ItemSZ], ref: ItemSZ.name })
     itemSZ: Array<ItemSZ>
 
-    @Prop({required: false, type: Number})
+    @Prop({ required: false, type: Number })
     price: number
 
-    @Prop({required: false, type: Number})
+    @Prop({ required: false, type: Number })
     discount: number
 
-    @Prop({required: false, type: Number})
+    @Prop({ required: false, type: Number })
     quantity: number
 }
 
 @Schema()
 export class InfoProducts extends Document {
-    @Prop({ type: String, default: function genUUID() {
-        return uuidv4()
-    }})
+    @Prop({
+        type: String, default: function genUUID() {
+            return uuidv4()
+        }
+    })
     _id: string
 
-    @Prop({required: false})
+    @Prop({ required: false })
     ms: string
 
-    @Prop({required: false})
+    @Prop({ required: false })
     sz: string
-    
-    @Prop({type: [ItemMS], ref: ItemMS.name})
+
+    @Prop({ type: [ItemMS], ref: ItemMS.name })
     itemMS: Array<ItemMS>
 
 }
 
-@Schema({timestamps: true})
+@Schema({ timestamps: true })
 export class ProductsEntity {
- 
-    @Prop({required: true, type: [ListImage], _id: true})
+
+    @Prop({ required: true, type: [ListImage], _id: true })
     images: [ListImage]
 
-    @Prop({required: true})
+    @Prop({ required: true })
     name: string
 
     @Prop({})
     sale: number
 
-    @Prop({required: false, type: Number, default: 0})
+    @Prop({ required: false, type: Number, default: 0 })
     price: number
 
-    @Prop({required: false, type: Number, default: 0})
+    @Prop({ required: false, type: Number, default: 0 })
     discount: number
 
-    @Prop({required: false, type: Number, default: 0})
+    @Prop({ required: false, type: Number, default: 0 })
     quantity: number
 
-    @Prop({required: false, type: Number, default: 0})
+    @Prop({ required: false, type: Number, default: 0 })
     point: number
 
-    @Prop({required: false, type: String})
+    @Prop({ required: false, type: String })
     content: string
 
-    @Prop({type: InfoProducts})
+    @Prop({ type: InfoProducts })
     info: InfoProducts
 
-    @Prop({type: Types.ObjectId, ref: CategoryProductsEntity.name})
+    @Prop({ type: Types.ObjectId, ref: CategoryProductsEntity.name })
     categories: CategoryProductsEntity[]
 
-    @Prop({type: Boolean, default: true})
+    @Prop({ required: false, type: Number, default: 0 })
+    transportFee: number
+
+    @Prop({ type: Boolean, default: true })
     status: boolean
 
     @Prop({})

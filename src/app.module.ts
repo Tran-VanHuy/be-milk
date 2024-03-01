@@ -7,6 +7,7 @@ import { ProductsModule } from './module/products/products.module';
 import { AddressEntity } from './module/address/address.schema';
 import { UploadModule } from './module/upload/upload.module';
 import { AddressModule } from './module/address/address.module';
+import { VoucherModule } from './module/voucher/voucher.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -14,11 +15,12 @@ import { AddressModule } from './module/address/address.module';
     isGlobal: true
   }),
   MongooseModule.forRoot(process.env.DB_URI),
-  UserModule,
-  CategoryProductsModule,
-  ProductsModule,
-  AddressModule,
-  UploadModule
-]
+    UserModule,
+    CategoryProductsModule,
+    ProductsModule,
+    AddressModule,
+    UploadModule,
+    VoucherModule
+  ]
 })
-export class AppModule {}
+export class AppModule { }

@@ -65,12 +65,9 @@ export class ProductsService {
                 const priceSZ = mapItemSZ && mapItemSZ.length > 0 && mapItemSZ.map(item => item)
 
                 const price = res.price && res.price - (res.price * (res.discount / 100))
-                console.log("price", res.price);
 
 
                 if (priceSZ && priceSZ.length > 0) {
-                    console.log("vào đây 1");
-                    console.log("priceSZ", priceSZ);
 
                     const maxPriceSZ = formatPrice(Math.max(...priceSZ))
                     const minPriceSZ = formatPrice(Math.min(...priceSZ))
@@ -79,12 +76,12 @@ export class ProductsService {
                     const newRes = {
                         ...res.toObject(),
                         priceTitle,
-                        checkDiscount: maxPriceSZ === minPriceSZ ? true : false
+                        checkDiscount: maxPriceSZ === minPriceSZ ? true : false,
+                        type: 1
                     }
                     return response(200, newRes)
                 }
                 if (priceMS && priceMS.length > 0) {
-                    console.log("vào đây 2");
 
                     const maxPriceMS = formatPrice(Math.max(...priceMS))
                     const minPriceMS = formatPrice(Math.min(...priceMS))
@@ -92,20 +89,20 @@ export class ProductsService {
                     const newRes = {
                         ...res.toObject(),
                         priceTitle,
-                        checkDiscount: maxPriceMS === minPriceMS ? true : false
+                        checkDiscount: maxPriceMS === minPriceMS ? true : false,
+                        type: 2
                     }
                     return response(200, newRes)
                 }
 
                 if (price) {
-                    console.log("vào đây 3");
-
 
                     priceTitle = formatPrice(price)
                     const newRes = {
                         ...res.toObject(),
                         priceTitle,
-                        checkDiscount: price === res.price ? true : false
+                        checkDiscount: price === res.price ? true : false,
+                        type: 3
                     }
                     return response(200, newRes)
                 }

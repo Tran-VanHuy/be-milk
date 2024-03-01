@@ -90,6 +90,9 @@ export class ProductsDto {
     })
     categories: []
 
+    @ApiProperty({ required: false, type: Number, default: 0 })
+    transportFee: number
+
     @ApiProperty({
         type: Boolean,
         required: false,
