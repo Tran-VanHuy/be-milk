@@ -8,6 +8,7 @@ import { AddressEntity } from './module/address/address.schema';
 import { UploadModule } from './module/upload/upload.module';
 import { AddressModule } from './module/address/address.module';
 import { VoucherModule } from './module/voucher/voucher.module';
+import { BannerModule } from './module/banner/banner.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -20,7 +21,8 @@ import { VoucherModule } from './module/voucher/voucher.module';
     ProductsModule,
     AddressModule,
     UploadModule,
-    VoucherModule
+    VoucherModule,
+    BannerModule
   ]
 })
 export class AppModule { }

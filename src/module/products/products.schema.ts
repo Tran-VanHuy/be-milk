@@ -116,6 +116,9 @@ export class ProductsEntity {
     @Prop({ required: false, type: Number, default: 0 })
     transportFee: number
 
+    @Prop({ required: false, type: Number, default: 0 })
+    deliveryDate: number
+
     @Prop({ type: Boolean, default: true })
     status: boolean
 

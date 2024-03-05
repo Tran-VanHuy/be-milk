@@ -93,6 +93,9 @@ export class ProductsDto {
     @ApiProperty({ required: false, type: Number, default: 0 })
     transportFee: number
 
+    @ApiProperty({ required: false, type: Number, default: 0 })
+    deliveryDate: number
+
     @ApiProperty({
         type: Boolean,
         required: false,

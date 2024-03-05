@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AddressService } from "./address.service";
 import { AddressDto } from "./dto/address.dto";
@@ -13,33 +13,41 @@ import { AddressDetailDto } from "./dto/address-delete.dto";
 
 export class AddressController {
 
-    constructor(private readonly addressService: AddressService){}
+    constructor(private readonly addressService: AddressService) { }
 
-    @ApiOperation({summary: "Thêm địa chỉ"})
+    @ApiOperation({ summary: "Thêm địa chỉ" })
     @Post("/address")
-    async create(@Body() body: AddressDto){
+    async create(@Body() body: AddressDto) {
 
         return this.addressService.create(body)
     }
 
-    @ApiOperation({summary: "Xóa địa chỉ"})
+    @ApiOperation({ summary: "Xóa địa chỉ" })
     @Post('/delete/address')
-    async delete(@Body() body: AddressDetailDto){
+    async delete(@Body() body: AddressDetailDto) {
 
         return this.addressService.delete(body)
     }
 
-    @ApiOperation({summary: "Chi tiết địa chỉ"})
+    @ApiOperation({ summary: "Chi tiết địa chỉ" })
     @Post('/detail/address')
-    async detail(@Body() body: AddressDetailDto){
+    async detail(@Body() body: AddressDetailDto) {
 
         return this.addressService.detail(body)
     }
 
-    @ApiOperation({summary: "Cập nhật địa chỉ"})
+    @ApiOperation({ summary: "Cập nhật địa chỉ" })
     @Post('/update/address/:_id')
-    async update(@Param("_id") _id: string, @Body() body: AddressDto){
+    async update(@Param("_id") _id: string, @Body() body: AddressDto) {
 
         return this.addressService.update(_id, body)
     }
+
+    @Get("/address/default")
+    async addressDefault(@Query("userId") userId: string) {
+
+        return await this.addressService.addressDefault(userId)
+    }
+
+
 }

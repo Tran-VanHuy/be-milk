@@ -26,15 +26,15 @@ export class AddressService {
                 let newAddress = [];
                 const res = await this.addressModel.create(body);
                 if (body.default) {
-                    
-                    const findAddressNotDefault = await this.addressModel.find({ userId: body.userId, default: true, _id: { $ne: res._id} })
+
+                    const findAddressNotDefault = await this.addressModel.find({ userId: body.userId, default: true, _id: { $ne: res._id } })
                     Promise.resolve(findAddressNotDefault).then(async (values) => {
-                            
+
                         values.map(async (item) => {
-                            
-                           await this.addressModel.findByIdAndUpdate(item.id, {default: false});
+
+                            await this.addressModel.findByIdAndUpdate(item.id, { default: false });
                         })
-                         
+
                     })
 
                     const newfind = await this.userModel.findOne({ userId: body.userId })
@@ -60,41 +60,52 @@ export class AddressService {
         }
     }
 
-    async delete(body: AddressDetailDto){
+    async delete(body: AddressDetailDto) {
 
-        const {userId, _id} = body;
+        const { userId, _id } = body;
         try {
-            
-            const res = await this.addressModel.findOneAndDelete({userId: userId, _id});
+
+            const res = await this.addressModel.findOneAndDelete({ userId: userId, _id });
             return response(200, res);
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
-            
+
         }
     }
 
-    async detail(body: AddressDetailDto){
+    async detail(body: AddressDetailDto) {
 
-        const {userId, _id} = body;
+        const { userId, _id } = body;
         try {
-            
-            const res = await this.addressModel.findOne({userId: userId, _id});
+
+            const res = await this.addressModel.findOne({ userId: userId, _id });
             return response(200, res);
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
-            
+
         }
     }
 
-    async update(_id: string, body: AddressDto){
+    async update(_id: string, body: AddressDto) {
 
         try {
-            
-            const res = await this.addressModel.findOneAndUpdate({userId: body.userId, _id: _id}, body);
+
+            const res = await this.addressModel.findOneAndUpdate({ userId: body.userId, _id: _id }, body);
             return response(200, res);
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
-            
+
+        }
+    }
+
+    async addressDefault(userId: string) {
+
+        try {
+
+            const res = await this.addressModel.findOne({ userId, default: true })
+            return response(200, res);
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
     }
 }
