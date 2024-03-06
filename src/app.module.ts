@@ -9,6 +9,9 @@ import { UploadModule } from './module/upload/upload.module';
 import { AddressModule } from './module/address/address.module';
 import { VoucherModule } from './module/voucher/voucher.module';
 import { BannerModule } from './module/banner/banner.module';
+import { AdsModule } from './module/ads/ads.module';
+import { OrderModule } from './module/order/order.module';
+import { CartModule } from './module/cart/cart.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -22,7 +25,10 @@ import { BannerModule } from './module/banner/banner.module';
     AddressModule,
     UploadModule,
     VoucherModule,
-    BannerModule
+    BannerModule,
+    AdsModule,
+    OrderModule,
+    CartModule
   ]
 })
 export class AppModule { }
