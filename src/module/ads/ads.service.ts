@@ -56,7 +56,6 @@ export class AdsService {
     }
 
     async update(_id: string, body: AdsDto) {
-
         try {
 
             const res = await this.adsModule.findByIdAndUpdate(_id, body)

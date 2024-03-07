@@ -36,13 +36,13 @@ export class AdsController {
         return await this.adsService.detail(_id)
     }
 
-    @Put(":id")
+    @Put(":_id")
     async update(@Param("_id") _id: string, @Body() body: AdsDto) {
 
         return await this.adsService.update(_id, body)
     }
 
-    @Delete(":id")
+    @Delete(":_id")
     async delete(@Param("_id") _id: string) {
 
         return await this.adsService.delete(_id)
