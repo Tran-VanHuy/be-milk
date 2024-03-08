@@ -12,6 +12,7 @@ import { BannerModule } from './module/banner/banner.module';
 import { AdsModule } from './module/ads/ads.module';
 import { OrderModule } from './module/order/order.module';
 import { CartModule } from './module/cart/cart.module';
+import { FavouriteModel } from './module/favourite/favourite.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -28,7 +29,8 @@ import { CartModule } from './module/cart/cart.module';
     BannerModule,
     AdsModule,
     OrderModule,
-    CartModule
+    CartModule,
+    FavouriteModel
   ]
 })
 export class AppModule { }

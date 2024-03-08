@@ -21,6 +21,12 @@ export class OrderEntity {
     @Prop({ type: String, required: true })
     type: string
 
+    @Prop({ type: String, required: true })
+    deliveryAddress: string
+
+    @Prop({ type: Number, required: true })
+    price: number
+
     @Prop({ type: String, required: false })
     createdAt: string
 

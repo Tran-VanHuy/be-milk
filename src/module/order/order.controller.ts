@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { OrderService } from "./order.service";
-import { InfoOrderDto } from "./dto/info-order.dto";
+import { InfoOrderDto, ListInfoOrderDto } from "./dto/info-order.dto";
 import { ArayItemOrderDto, ItemOrderDto } from "./dto/item-order.dto";
 
 @ApiTags("Order")
@@ -30,5 +30,11 @@ export class OrderController {
     async infoOrder(@Body() body: InfoOrderDto) {
 
         return await this.orderService.infoOrder(body)
+    }
+
+    @Post("/list-info")
+    async listInfoOrder(@Body() body: ListInfoOrderDto) {
+
+        return await this.orderService.listInfoOrder(body)
     }
 }

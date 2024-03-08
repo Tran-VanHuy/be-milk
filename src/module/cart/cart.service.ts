@@ -20,7 +20,8 @@ export class CartService {
             const product = await this.productModel.findOne({ _id: body.productId })
             const newBody = {
                 ...body,
-                name: product.name
+                name: product.name,
+                quantity: body.quantity
             }
             const res = await this.cartModel.create(newBody)
             return response(200, res)

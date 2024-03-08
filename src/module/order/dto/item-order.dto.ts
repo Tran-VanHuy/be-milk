@@ -20,6 +20,9 @@ export class ItemOrderDto {
 
     @ApiProperty({ type: String, required: true })
     userId: string
+
+    @ApiProperty({ type: String, required: true })
+    deliveryAddress: string
 }
 
 export class ArayItemOrderDto {
@@ -29,4 +32,7 @@ export class ArayItemOrderDto {
 
     @ApiProperty({ type: String, required: true })
     userId: string
+
+    @ApiProperty({ type: String, required: true })
+    deliveryAddress: string
 }

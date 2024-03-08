@@ -17,3 +17,12 @@ export class InfoOrderDto {
     @ApiProperty({ required: false, type: String })
     szId: string
 }
+
+export class ListInfoOrderDto {
+
+    @ApiProperty({ required: true, type: [InfoOrderDto] })
+    products: InfoOrderDto[]
+
+    @ApiProperty({ required: true, type: String })
+    userId: string
+}
