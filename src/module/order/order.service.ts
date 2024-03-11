@@ -16,14 +16,30 @@ export class OrderService {
         @InjectModel(OrderEntity.name) private orderModel: Model<OrderEntity>) { }
 
 
-    async getAll() {
+    async getAll(userId: string, type: string) {
 
         try {
+            let find = {};
 
-            const res = await this.orderModel.find().populate({
+            if (type) {
+
+                find = {
+                    ...find,
+                    type
+                }
+            }
+
+            if (userId) {
+
+                find = {
+                    ...find,
+                    userId
+                }
+            }
+            const res = await this.orderModel.find(find).populate({
                 path: "orders",
                 model: ItemOrderEntity.name
-            })
+            }).sort({ createdAt: -1 })
             return response(200, res)
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
@@ -75,7 +91,8 @@ export class OrderService {
                     priceDiscount1: (product.price - (product.price * (product.discount / 100))),
                     priceDiscount: (product.price - (product.price * (product.discount / 100))) * body.quantity + (product?.transportFee || 0),
                     subtotal: (product.price - (product.price * (product.discount / 100))) * body.quantity,
-                    quantityProduct: body.quantity
+                    quantityProduct: body.quantity,
+                    images: product.images[0].name
                 }
             } else {
                 data = {
@@ -87,12 +104,13 @@ export class OrderService {
                     nameSZ: body?.szId && ((product.info.itemMS.find(idMS => idMS._id === body.msId)).itemSZ.find(idSZ => idSZ._id === body.szId)).name,
                     subtotal: this.subtotal(body, product),
                     price: this.price(body, product),
-                    nameItem: this.nameItem(body, product)
+                    nameItem: this.nameItem(body, product),
+                    images: body?.msId && product.info.itemMS.find(idMS => idMS._id === body.msId).image
                 }
             }
             return response(200, data)
         } catch (error) {
-            
+
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
     }
@@ -118,7 +136,8 @@ export class OrderService {
                 nameSZ: body?.products[index]?.szId && ((item.info.itemMS.find(idMS => idMS._id === body.products[index].msId)).itemSZ.find(idSZ => idSZ._id === body.products[index].szId)).name,
                 subtotal: this.subtotal(body.products[index], item),
                 price: this.price(body.products[index], item),
-                nameItem: this.nameItem(body.products[index], item)
+                nameItem: this.nameItem(body.products[index], item),
+                images: this.imageItem(body.products[index], item)
             }))
 
             const subtotal = (res.map(item => item.subtotal)).reduce((acc, value) => acc + value, 0)
@@ -131,7 +150,6 @@ export class OrderService {
 
             return response(200, newRes)
         } catch (error) {
-            console.log(error);
 
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
@@ -141,12 +159,10 @@ export class OrderService {
 
         const itemMS = product?.info?.itemMS?.find(idMS => idMS._id === body.msId);
         const itemSZ = itemMS?.itemSZ?.find(idSZ => idSZ._id === body.szId);
-        console.log("itemSZ", itemSZ);
-        
+
         if (body?.szId) {
-            console.log("vao dat");
-            
-            return (itemSZ.price - (itemSZ.price * itemSZ.discount / 100 )) * (body.quantity || 1)
+
+            return (itemSZ.price - (itemSZ.price * itemSZ.discount / 100)) * (body.quantity || 1)
         }
 
         if (body?.msId) {
@@ -208,7 +224,7 @@ export class OrderService {
             return (itemMS.price - (itemMS.price * (itemMS.discount / 100)))
         }
         console.log(body?.msId, product?.info?.itemMS);
-        
+
         return (product.price - (product.price * (product.discount / 100)))
     }
 
@@ -227,5 +243,28 @@ export class OrderService {
         }
 
         return ``;
+    }
+
+    imageItem(body: InfoOrderDto, product) {
+
+        const itemMS = product?.info?.itemMS?.find(idMS => idMS._id === body.msId);
+
+        if (body?.msId) {
+            return `${itemMS.image}`
+        }
+
+        return product.images[0].name;
+    }
+
+    async delete(_id: string, userId: string) {
+
+        try {
+
+            const res = await this.orderModel.findOneAndDelete({ _id, userId })
+            return response(200, res)
+        } catch (error) {
+
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { FavouriteService } from "./favourite.service";
 import { FavouriteDto } from "./dto/favourite.dto";
@@ -35,5 +35,11 @@ export class FavouriteController {
     async checkFavourite(@Body() body: checkFavouriteDto) {
 
         return await this.favouriteService.checkFavourite(body)
+    }
+
+    @Delete("/delete/:_id")
+    async delete(@Param("_id") _id: string) {
+
+        return await this.favouriteService.delete(_id)
     }
 }

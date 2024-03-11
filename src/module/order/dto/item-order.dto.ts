@@ -23,6 +23,12 @@ export class ItemOrderDto {
 
     @ApiProperty({ type: String, required: true })
     deliveryAddress: string
+
+    @ApiProperty({ type: String, required: false })
+    nameItem: string
+
+    @ApiProperty({ type: String, required: true })
+    images: string
 }
 
 export class ArayItemOrderDto {

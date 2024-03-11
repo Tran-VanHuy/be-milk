@@ -69,4 +69,16 @@ export class FavouriteService {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
     }
+
+    async delete(_id: string) {
+
+        try {
+
+            const res = await this.favouriteModel.findByIdAndDelete(_id);
+            return response(200, res)
+        } catch (error) {
+            
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
 }

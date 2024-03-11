@@ -6,20 +6,23 @@ import { Document, Types } from "mongoose";
 @Schema()
 export class UserEntity {
 
-    @Prop({required: true})
+    @Prop({ required: true })
     userId: string;
 
-    @Prop({required: true})
+    @Prop({ required: true })
     avatar: string;
 
-    @Prop({required: true})
+    @Prop({ required: true })
     name: string;
 
-    @Prop({required: true})
+    @Prop({ required: true })
     phone: string;
 
-    @Prop({type: Types.ObjectId, ref: AddressEntity.name } )
-    address:  AddressEntity[]
+    @Prop({ type: Types.ObjectId, ref: AddressEntity.name })
+    address: AddressEntity[]
+
+    @Prop({ required: false, default: "USER", type: String })
+    role: string;
 }
 
 export const UserTableName = "users";

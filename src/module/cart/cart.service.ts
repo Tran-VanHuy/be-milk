@@ -58,6 +58,18 @@ export class CartService {
         }
     }
 
+    async delete(_id: string, userId: string) {
+
+        try {
+
+            const res = await this.cartModel.findOneAndDelete({ _id, userId })
+            return response(200, res)
+        } catch (error) {
+            
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
     async totalCart(userId: string) {
 
         try {

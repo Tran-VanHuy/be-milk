@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiQuery, ApiSecurity, ApiTags } from "@nestjs/swagger";
 import { CartService } from "./cart.service";
 import { CartDto } from "./dto/cart.dto";
@@ -20,18 +20,24 @@ export class CartController {
         return await this.cartService.create(body)
     }
 
-    @ApiQuery({name: "userId", required: true, type: String})
+    @ApiQuery({ name: "userId", required: true, type: String })
     @Get()
-    async getAll(@Query("userId") userId: string){
+    async getAll(@Query("userId") userId: string) {
 
         return await this.cartService.getAll(userId)
     }
 
     @ApiSecurity('basic')
-    @ApiQuery({name: "userId", type: String, required: true})
+    @ApiQuery({ name: "userId", type: String, required: true })
     @Get("/check/total")
-    async totalCart(@Query("userId") userId: string){
+    async totalCart(@Query("userId") userId: string) {
         return await this.cartService.totalCart(userId)
+    }
+
+    @Delete("/delete")
+    async delete(@Query("_id") _id: string, @Query("userId") userId: string) {
+
+        return await this.cartService.delete(_id, userId)
     }
 
 }

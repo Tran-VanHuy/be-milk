@@ -27,6 +27,9 @@ export class OrderEntity {
     @Prop({ type: Number, required: true })
     price: number
 
+    @Prop({ type: Boolean, required: false, default: false })
+    rating: boolean
+
     @Prop({ type: String, required: false })
     createdAt: string
 
@@ -54,6 +57,12 @@ export class ItemOrderEntity {
 
     @Prop({ type: String, required: true })
     userId: string
+
+    @Prop({ type: String, required: false })
+    nameItem: string
+
+    @Prop({ type: String, required: false })
+    images: string
 
     @Prop({ type: String, required: false })
     createdAt: string

@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, VERSION_NEUTRAL } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { OrderService } from "./order.service";
 import { InfoOrderDto, ListInfoOrderDto } from "./dto/info-order.dto";
 import { ArayItemOrderDto, ItemOrderDto } from "./dto/item-order.dto";
@@ -15,10 +15,12 @@ export class OrderController {
 
     constructor(private readonly orderService: OrderService) { }
 
+    @ApiQuery({ name: "userId", required: true, type: String })
+    @ApiQuery({ name: "type", required: false, type: String })
     @Get()
-    async getAll() {
+    async getAll(@Query("userId") userId: string, @Query("type") type: string) {
 
-        return await this.orderService.getAll()
+        return await this.orderService.getAll(userId, type)
     }
 
     @Post()
@@ -36,5 +38,11 @@ export class OrderController {
     async listInfoOrder(@Body() body: ListInfoOrderDto) {
 
         return await this.orderService.listInfoOrder(body)
+    }
+
+    @Delete("/delete")
+    async delete(@Query("_id") _id: string, @Query("userId") userId: string) {
+
+        return await this.orderService.delete(_id, userId)
     }
 }
