@@ -223,7 +223,6 @@ export class OrderService {
 
             return (itemMS.price - (itemMS.price * (itemMS.discount / 100)))
         }
-        console.log(body?.msId, product?.info?.itemMS);
 
         return (product.price - (product.price * (product.discount / 100)))
     }

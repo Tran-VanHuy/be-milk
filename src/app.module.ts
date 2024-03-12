@@ -13,6 +13,7 @@ import { AdsModule } from './module/ads/ads.module';
 import { OrderModule } from './module/order/order.module';
 import { CartModule } from './module/cart/cart.module';
 import { FavouriteModel } from './module/favourite/favourite.module';
+import { NotificationModule } from './module/notification/notification.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -30,7 +31,8 @@ import { FavouriteModel } from './module/favourite/favourite.module';
     AdsModule,
     OrderModule,
     CartModule,
-    FavouriteModel
+    FavouriteModel,
+    NotificationModule
   ]
 })
 export class AppModule { }
