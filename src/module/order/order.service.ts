@@ -137,7 +137,9 @@ export class OrderService {
                 subtotal: this.subtotal(body.products[index], item),
                 price: this.price(body.products[index], item),
                 nameItem: this.nameItem(body.products[index], item),
-                images: this.imageItem(body.products[index], item)
+                images: this.imageItem(body.products[index], item),
+                msId: body?.products[index]?.msId,
+                szId: body?.products[index]?.szId
             }))
 
             const subtotal = (res.map(item => item.subtotal)).reduce((acc, value) => acc + value, 0)

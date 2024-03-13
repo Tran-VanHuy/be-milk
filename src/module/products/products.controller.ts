@@ -13,22 +13,22 @@ import { Paging } from "src/common/pagination";
 
 export class ProductsController {
 
-    constructor(private readonly productsService: ProductsService){}
+    constructor(private readonly productsService: ProductsService) { }
 
-    @ApiQuery({name: "skip", type: Number, required: true})
-    @ApiQuery({name: "limit", type: Number, required: true})
-    @ApiQuery({name: "status", type: Boolean, required: false})
+    @ApiQuery({ name: "skip", type: Number, required: true })
+    @ApiQuery({ name: "limit", type: Number, required: true })
+    @ApiQuery({ name: "status", type: Boolean, required: false })
 
     @HttpCode(200)
     @Get("/products")
-    async getAll(@Query() {skip, limit}: Paging, @Query() {status}){
+    async getAll(@Query() { skip, limit }: Paging, @Query() { status }) {
 
         return await this.productsService.getAll(skip, limit, status)
     }
 
     @Post("/products")
     @HttpCode(200)
-    async create(@Body() body: ProductsDto){
+    async create(@Body() body: ProductsDto) {
 
         const res = await this.productsService.create(body);
         return res;
@@ -38,5 +38,11 @@ export class ProductsController {
     update(@Param('_id') _id: string) {
         return this.productsService.findById(_id);
     }
+
+    @Get("/products/search/name")
+    search(@Query('search') search: string) {
+        return this.productsService.search(search);
+    }
+
 
 }

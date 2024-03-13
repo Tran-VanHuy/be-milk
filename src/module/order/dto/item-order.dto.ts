@@ -29,6 +29,12 @@ export class ItemOrderDto {
 
     @ApiProperty({ type: String, required: true })
     images: string
+
+    @ApiProperty({ type: String, required: false })
+    msId: string
+
+    @ApiProperty({ type: String, required: false })
+    szId: string
 }
 
 export class ArayItemOrderDto {

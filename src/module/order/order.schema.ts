@@ -65,6 +65,12 @@ export class ItemOrderEntity {
     images: string
 
     @Prop({ type: String, required: false })
+    msId: string
+
+    @Prop({ type: String, required: false })
+    szId: string
+
+    @Prop({ type: String, required: false })
     createdAt: string
 
     @Prop({ type: String, required: false })

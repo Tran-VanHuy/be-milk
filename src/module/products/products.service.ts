@@ -6,7 +6,6 @@ import { ProductsDto } from "./dto/products.dto";
 import { response } from "src/response/response";
 import { CategoryProductsEntity } from "../category-products/category-products.schema";
 import { formatPrice } from "src/common/format-price";
-import { log } from "console";
 
 @Injectable()
 export class ProductsService {
@@ -108,6 +107,17 @@ export class ProductsService {
                 }
 
             }
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_GATEWAY)
+        }
+    }
+
+    async search(search: string) {
+
+        try {
+            const regex = new RegExp(search.split(/\s+/).join('.*'), 'i');
+            const res = await this.productModel.find({ name: { $regex: regex } }).skip(0).limit(10).select({ name: 1 })
+            return response(200, res)
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_GATEWAY)
         }
