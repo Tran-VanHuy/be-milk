@@ -11,28 +11,28 @@ import { UserDto } from "./dto/user.dto";
 
 export class UserController {
 
-    constructor(private readonly userService: UserService){}
+    constructor(private readonly userService: UserService) { }
 
-    @ApiOperation({summary: "Danh sách người dùng"})
+    @ApiOperation({ summary: "Danh sách người dùng" })
     @Get("/user")
-    async findAll(){
+    async findAll() {
 
-        return "hello";
+        return await this.userService.getAll()
     }
 
-    @ApiOperation({summary: "Tạo người dùng"})
+    @ApiOperation({ summary: "Tạo người dùng" })
     @HttpCode(200)
     @Post("/user")
-    async create(@Body() body: UserDto){
+    async create(@Body() body: UserDto) {
 
         const res = await this.userService.create(body);
         return res;
     }
 
-    @ApiQuery({name: "userId", type: String, required: true})
+    @ApiQuery({ name: "userId", type: String, required: true })
     @HttpCode(200)
     @Get("/user/findOne")
-    async findOne(@Query("userId") userId: string){
+    async findOne(@Query("userId") userId: string) {
         return this.userService.findOne(userId);
     }
 }

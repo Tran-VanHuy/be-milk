@@ -1,4 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Types } from "mongoose";
+import { UserEntity } from "../user/user.schema";
 
 @Schema({ timestamps: true })
 export class NotificationEntity {
@@ -12,7 +14,7 @@ export class NotificationEntity {
     @Prop({ type: String, required: true })
     shortContent: string
 
-    @Prop({ type: String, required: true })
+    @Prop({ type: String, required: false })
     content: string
 
     @Prop({ type: String, required: false })
@@ -20,6 +22,9 @@ export class NotificationEntity {
 
     @Prop({ type: String, required: false })
     productId: string
+
+    @Prop({ type: Types.ObjectId, required: false, ref: UserEntity.name })
+    users: UserEntity[]
 
     @Prop({ type: String, required: false })
     createdAt: string

@@ -12,13 +12,16 @@ export class ProductsService {
 
     constructor(@InjectModel(ProductsEntity.name) private readonly productModel: Model<ProductsDocument>) { }
 
-    async getAll(skip: number, limit: number, status: boolean) {
+    async getAll(skip: number, limit: number, status: boolean, category: string) {
 
         try {
             let find = {};
             if (status) {
 
-                find = { status: status }
+                find = { ...find, status: status }
+            }
+            if (category) {
+                find = { ...find, categories: { $in: [category] } }
             }
             const res = await this.productModel.find(find).populate({
                 path: 'categories',

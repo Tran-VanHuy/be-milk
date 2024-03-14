@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
+import { Types } from "mongoose"
 
 export class NotificationDto {
 
@@ -11,7 +12,7 @@ export class NotificationDto {
     @ApiProperty({ type: String, required: true })
     shortContent: string
 
-    @ApiProperty({ type: String, required: true })
+    @ApiProperty({ type: String, required: false })
     content: string
 
     @ApiProperty({ type: String, required: false })
@@ -19,4 +20,10 @@ export class NotificationDto {
 
     @ApiProperty({ type: String, required: false })
     productId: string
+
+    @ApiProperty({ type: String, required: false, example: ["userId"] })
+    users?: []
+
+    @ApiProperty({ type: Boolean, required: true })
+    allUser: boolean
 }

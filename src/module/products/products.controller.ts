@@ -18,12 +18,12 @@ export class ProductsController {
     @ApiQuery({ name: "skip", type: Number, required: true })
     @ApiQuery({ name: "limit", type: Number, required: true })
     @ApiQuery({ name: "status", type: Boolean, required: false })
-
+    @ApiQuery({ name: "category", type: String, required: false })
     @HttpCode(200)
     @Get("/products")
-    async getAll(@Query() { skip, limit }: Paging, @Query() { status }) {
+    async getAll(@Query() { skip, limit }: Paging, @Query() { status }, @Query("category") category: string) {
 
-        return await this.productsService.getAll(skip, limit, status)
+        return await this.productsService.getAll(skip, limit, status, category)
     }
 
     @Post("/products")
