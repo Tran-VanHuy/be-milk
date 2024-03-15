@@ -7,13 +7,16 @@ import { response } from "src/response/response";
 import { ArayItemOrderDto } from "./dto/item-order.dto";
 import { ItemOrderEntity, OrderEntity } from "./order.schema";
 import { log } from "console";
+import { ChangeStatusDto } from "./dto/change-status.dto";
+import { UserEntity } from "../user/user.schema";
 
 @Injectable()
 export class OrderService {
 
     constructor(@InjectModel(ProductsEntity.name) private productModel: Model<ProductsEntity>,
         @InjectModel(ItemOrderEntity.name) private itemOrderModel: Model<ItemOrderEntity>,
-        @InjectModel(OrderEntity.name) private orderModel: Model<OrderEntity>) { }
+        @InjectModel(OrderEntity.name) private orderModel: Model<OrderEntity>,
+        @InjectModel(UserEntity.name) private userModel: Model<UserEntity>) { }
 
 
     async getAll(userId: string, type: string) {
@@ -266,6 +269,35 @@ export class OrderService {
         } catch (error) {
 
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async changeStatus(body: ChangeStatusDto) {
+
+        try {
+            const findUser = await this.userModel.findOne({ userId: body.userId }).select({ role: 1 });
+            if (findUser?.role === "ADMIN") {
+                let res = {};
+                if (body.type === "Hủy đơn hàng") {
+
+                    res = await this.orderModel.findByIdAndDelete(body.orderId);
+                }
+
+                if (body.type === "Đang vận chuyển") {
+                    res = await this.orderModel.findByIdAndUpdate(body.orderId, { type: "ĐANG VẬN CHUYỂN" });
+                }
+
+                if (body.type === "Đã vận chuyển") {
+                    res = await this.orderModel.findByIdAndUpdate(body.orderId, { type: "ĐÃ VẬN CHUYỂN" });
+                }
+
+                return response(200, res)
+            } else {
+                throw new HttpException(null, HttpStatus.FORBIDDEN)
+            }
+
+        } catch (error) {
+            return error
         }
     }
 }

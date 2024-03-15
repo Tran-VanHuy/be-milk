@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Query, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { OrderService } from "./order.service";
 import { InfoOrderDto, ListInfoOrderDto } from "./dto/info-order.dto";
 import { ArayItemOrderDto, ItemOrderDto } from "./dto/item-order.dto";
+import { ChangeStatusDto } from "./dto/change-status.dto";
 
 @ApiTags("Order")
 @Controller({
@@ -15,7 +16,7 @@ export class OrderController {
 
     constructor(private readonly orderService: OrderService) { }
 
-    @ApiQuery({ name: "userId", required: true, type: String })
+    @ApiQuery({ name: "userId", required: false, type: String })
     @ApiQuery({ name: "type", required: false, type: String })
     @Get()
     async getAll(@Query("userId") userId: string, @Query("type") type: string) {
@@ -44,5 +45,11 @@ export class OrderController {
     async delete(@Query("_id") _id: string, @Query("userId") userId: string) {
 
         return await this.orderService.delete(_id, userId)
+    }
+
+    @Put("/change-type")
+    async changeStatus(@Body() body: ChangeStatusDto) {
+
+        return await this.orderService.changeStatus(body)
     }
 }

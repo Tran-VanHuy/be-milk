@@ -8,9 +8,9 @@ import { ItemOrderEntity, ItemOrderSchema, OrderEntity, OrderSchema } from "./or
 
 @Module({
 
-    imports: [MongooseModule.forFeature([{ name: ProductsEntity.name, schema: ProductsSchema }, { name: OrderEntity.name, schema: OrderSchema }, { name: ItemOrderEntity.name, schema: ItemOrderSchema }])],
+    imports: [MongooseModule.forFeature([{ name: ProductsEntity.name, schema: ProductsSchema }, { name: OrderEntity.name, schema: OrderSchema }, { name: ItemOrderEntity.name, schema: ItemOrderSchema }, { name: UserEntity.name, schema: UserSchema }])],
     controllers: [OrderController],
-    providers: [OrderService, ProductsEntity]
+    providers: [OrderService, ProductsEntity, UserEntity]
 })
 
 export class OrderModule { }
