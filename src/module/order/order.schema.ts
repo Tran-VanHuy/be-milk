@@ -24,6 +24,9 @@ export class OrderEntity {
     @Prop({ type: String, required: true })
     deliveryAddress: string
 
+    @Prop({ type: Object, required: true })
+    address: object
+
     @Prop({ type: Number, required: true })
     price: number
 

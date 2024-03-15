@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { OrderService } from "./order.service";
 import { InfoOrderDto, ListInfoOrderDto } from "./dto/info-order.dto";
@@ -51,5 +51,16 @@ export class OrderController {
     async changeStatus(@Body() body: ChangeStatusDto) {
 
         return await this.orderService.changeStatus(body)
+    }
+    @Get("/detail/:_id")
+    async orderDetail(@Param("_id") _id: string) {
+
+        return await this.orderService.orderDetail(_id)
+    }
+
+    @Get("/quantity-status-order")
+    async quantityStatusOrder(@Query("userId") userId: string) {
+
+        return await this.orderService.quantityTypeOrder(userId)
     }
 }

@@ -6,9 +6,9 @@ import { Model } from "mongoose";
 import { response } from "src/response/response";
 import { ArayItemOrderDto } from "./dto/item-order.dto";
 import { ItemOrderEntity, OrderEntity } from "./order.schema";
-import { log } from "console";
 import { ChangeStatusDto } from "./dto/change-status.dto";
 import { UserEntity } from "../user/user.schema";
+import { AddressEntity } from "../address/address.schema";
 
 @Injectable()
 export class OrderService {
@@ -16,7 +16,8 @@ export class OrderService {
     constructor(@InjectModel(ProductsEntity.name) private productModel: Model<ProductsEntity>,
         @InjectModel(ItemOrderEntity.name) private itemOrderModel: Model<ItemOrderEntity>,
         @InjectModel(OrderEntity.name) private orderModel: Model<OrderEntity>,
-        @InjectModel(UserEntity.name) private userModel: Model<UserEntity>) { }
+        @InjectModel(UserEntity.name) private userModel: Model<UserEntity>,
+        @InjectModel(AddressEntity.name) private addressModel: Model<AddressEntity>) { }
 
 
     async getAll(userId: string, type: string) {
@@ -42,7 +43,7 @@ export class OrderService {
             const res = await this.orderModel.find(find).populate({
                 path: "orders",
                 model: ItemOrderEntity.name
-            }).sort({ createdAt: -1 })
+            }).sort({ updatedAt: -1 })
             return response(200, res)
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
@@ -53,6 +54,7 @@ export class OrderService {
 
         try {
 
+            const findUser = await this.addressModel.findOne({ userId: body.userId, default: true })
             const createItemOrder = await Promise.resolve(body.order).then(async (values) => {
 
                 const create = await this.itemOrderModel.create(values)
@@ -67,7 +69,8 @@ export class OrderService {
                 userId: body.userId,
                 type: "ĐÃ ĐẶT HÀNG",
                 deliveryAddress: body.deliveryAddress,
-                price: totalPrice
+                price: totalPrice,
+                address: findUser
             }
 
             const createOrder = await this.orderModel.create(bodyOrder)
@@ -298,6 +301,50 @@ export class OrderService {
 
         } catch (error) {
             return error
+        }
+    }
+
+    async orderDetail(_id: string) {
+
+        try {
+
+            const res = await this.orderModel.findById(_id);
+            return response(200, res)
+        } catch (error) {
+
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async quantityTypeOrder(userId: string) {
+
+        try {
+            let find = {}
+
+            const findUser = await this.userModel.findOne({userId: userId});
+
+            if (findUser.role === "USER") {
+
+                find = {
+                    ...find,
+                    userId
+                }
+            }
+            const res = await this.orderModel.find(find)
+            const ordered = res.filter(item => item.type === "ĐÃ ĐẶT HÀNG").length
+            const beingTransported = res.filter(item => item.type === "ĐANG VẬN CHUYỂN").length
+            const shipped = res.filter(item => item.type === "ĐÃ VẬN CHUYỂN").length
+
+            const newRes = {
+                ordered,
+                beingTransported,
+                shipped
+            }
+
+            return response(200, newRes)
+
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
     }
 }
