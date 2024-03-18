@@ -6,6 +6,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { UserEntity, UserSchema } from "../user/user.schema";
 import { ItemOrderEntity, ItemOrderSchema, OrderEntity, OrderSchema } from "./order.schema";
 import { AddressEntity, AddressSchema } from "../address/address.schema";
+import { NotificationOrderEntity, NotificationOrderSchema } from "../notification/notification.schema";
 
 @Module({
 
@@ -14,10 +15,12 @@ import { AddressEntity, AddressSchema } from "../address/address.schema";
         { name: OrderEntity.name, schema: OrderSchema },
         { name: ItemOrderEntity.name, schema: ItemOrderSchema },
         { name: UserEntity.name, schema: UserSchema },
-        { name: AddressEntity.name, schema: AddressSchema }
+        { name: AddressEntity.name, schema: AddressSchema },
+        { name: NotificationOrderEntity.name, schema: NotificationOrderSchema }
+
     ])],
     controllers: [OrderController],
-    providers: [OrderService, ProductsEntity, UserEntity, AddressEntity]
+    providers: [OrderService, ProductsEntity, UserEntity, AddressEntity, NotificationOrderEntity]
 })
 
 export class OrderModule { }

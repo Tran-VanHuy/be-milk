@@ -9,6 +9,10 @@ import { ItemOrderEntity, OrderEntity } from "./order.schema";
 import { ChangeStatusDto } from "./dto/change-status.dto";
 import { UserEntity } from "../user/user.schema";
 import { AddressEntity } from "../address/address.schema";
+import { Observable, from, map, reduce } from "rxjs";
+import { NotificationOrderEntity } from "../notification/notification.schema";
+import { NotificationOrderDto } from "../notification/dto/notification-order.dto";
+import { formatPrice } from "src/common/format-price";
 
 @Injectable()
 export class OrderService {
@@ -17,7 +21,8 @@ export class OrderService {
         @InjectModel(ItemOrderEntity.name) private itemOrderModel: Model<ItemOrderEntity>,
         @InjectModel(OrderEntity.name) private orderModel: Model<OrderEntity>,
         @InjectModel(UserEntity.name) private userModel: Model<UserEntity>,
-        @InjectModel(AddressEntity.name) private addressModel: Model<AddressEntity>) { }
+        @InjectModel(AddressEntity.name) private addressModel: Model<AddressEntity>,
+        @InjectModel(NotificationOrderEntity.name) private notificationOrderModel: Model<NotificationOrderEntity>) { }
 
 
     async getAll(userId: string, type: string) {
@@ -54,7 +59,7 @@ export class OrderService {
 
         try {
 
-            const findUser = await this.addressModel.findOne({ userId: body.userId, default: true })
+            const addressUser = await this.addressModel.findOne({ userId: body.userId, default: true })
             const createItemOrder = await Promise.resolve(body.order).then(async (values) => {
 
                 const create = await this.itemOrderModel.create(values)
@@ -70,7 +75,7 @@ export class OrderService {
                 type: "ĐÃ ĐẶT HÀNG",
                 deliveryAddress: body.deliveryAddress,
                 price: totalPrice,
-                address: findUser
+                address: addressUser
             }
 
             const createOrder = await this.orderModel.create(bodyOrder)
@@ -78,6 +83,32 @@ export class OrderService {
                 path: "orders",
                 model: ItemOrderEntity.name
             })
+            if (res) {
+
+                const bodyNotificationUserOrder: NotificationOrderDto = {
+                    image: "https://theme.hstatic.net/1000360022/1001204220/14/policies_icon_2.png?v=1623",
+                    title: `Bạn vừa đặt đơn hàng đang chờ xác nhận...!`,
+                    content: `Đơn hàng trị giá ${formatPrice(totalPrice)} đang chờ cần xác nhận!`,
+                    orderId: res._id.toString(),
+                    orderCode: res.orderCode,
+                    userId: res.userId,
+                    readed: false
+                }
+
+                const bodyNotificationAdminOrder: NotificationOrderDto = {
+                    image: "https://theme.hstatic.net/1000360022/1001204220/14/policies_icon_2.png?v=1623",
+                    title: `Xác nhận đơn hàng`,
+                    content: `Đơn hàng trị giá ${formatPrice(totalPrice)} chưa xác nhận!`,
+                    orderId: res._id.toString(),
+                    orderCode: res.orderCode,
+                    userId: "ADMIN",
+                    readed: false
+                }
+
+                await this.notificationOrderModel.create(bodyNotificationUserOrder)
+                await this.notificationOrderModel.create(bodyNotificationAdminOrder)
+
+            }
 
             return response(200, res)
         } catch (error) {
@@ -280,18 +311,52 @@ export class OrderService {
         try {
             const findUser = await this.userModel.findOne({ userId: body.userId }).select({ role: 1 });
             if (findUser?.role === "ADMIN") {
-                let res = {};
+                let res: any = {};
                 if (body.type === "Hủy đơn hàng") {
 
                     res = await this.orderModel.findByIdAndDelete(body.orderId);
+
+                    const bodyNotificationUserOrder: NotificationOrderDto = {
+                        image: "https://theme.hstatic.net/1000360022/1001204220/14/policies_icon_2.png?v=1623",
+                        title: `Đơn hàng đã bị hủy...!`,
+                        content: `Đơn hàng trị giá ${formatPrice(res.price)} đã bị hủy!`,
+                        orderId: res._id.toString(),
+                        orderCode: res.orderCode,
+                        userId: res.userId,
+                        readed: true
+                    }
+                    await this.notificationOrderModel.create(bodyNotificationUserOrder)
                 }
 
                 if (body.type === "Đang vận chuyển") {
+
                     res = await this.orderModel.findByIdAndUpdate(body.orderId, { type: "ĐANG VẬN CHUYỂN" });
+
+                    const bodyNotificationUserOrder: NotificationOrderDto = {
+                        image: "https://theme.hstatic.net/1000360022/1001204220/14/policies_icon_2.png?v=1623",
+                        title: `Đơn hàng của bạn đang được vận chuyển...!`,
+                        content: `Đơn hàng trị giá ${formatPrice(res.price)} đang được vận chuyển!`,
+                        orderId: res._id.toString(),
+                        orderCode: res.orderCode,
+                        userId: res.userId,
+                        readed: true
+                    }
+                    await this.notificationOrderModel.create(bodyNotificationUserOrder)
                 }
 
                 if (body.type === "Đã vận chuyển") {
                     res = await this.orderModel.findByIdAndUpdate(body.orderId, { type: "ĐÃ VẬN CHUYỂN" });
+
+                    const bodyNotificationUserOrder: NotificationOrderDto = {
+                        image: "https://theme.hstatic.net/1000360022/1001204220/14/policies_icon_2.png?v=1623",
+                        title: `Giao hàng thành công`,
+                        content: `Đơn hàng trị giá ${formatPrice(res.price)} đã giao thành công!`,
+                        orderId: res._id.toString(),
+                        orderCode: res.orderCode,
+                        userId: res.userId,
+                        readed: true
+                    }
+                    await this.notificationOrderModel.create(bodyNotificationUserOrder)
                 }
 
                 return response(200, res)
@@ -321,7 +386,7 @@ export class OrderService {
         try {
             let find = {}
 
-            const findUser = await this.userModel.findOne({userId: userId});
+            const findUser = await this.userModel.findOne({ userId: userId });
 
             if (findUser.role === "USER") {
 
@@ -346,5 +411,67 @@ export class OrderService {
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
+    }
+
+    async bought(userId: string) {
+
+        try {
+
+            let find = {};
+            const findUser = await this.userModel.findOne({ userId });
+            if (findUser.role !== "ADMIN") {
+                find = {
+
+                    ...find,
+                    userId
+                }
+            }
+            const res = await this.itemOrderModel.find(find).populate({
+                path: "productId",
+                model: ProductsEntity.name
+            });
+
+
+
+            if (res && res.length > 0) {
+                const statistical = this.calculateProductCount(res)
+
+                return statistical
+            }
+
+            return response(200, res)
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    // Function to calculate the count of each productId
+    calculateProductCount(data: any[]): Observable<any[]> {
+        // Convert the array to an observable
+        return from(data).pipe(
+            // Use the map operator to extract productId and name from each object
+            map((item) => ({
+                productId: item.productId._id,
+                name: item.productId.name,
+                images: item.productId.images[0].name
+            })),
+            // Use the reduce operator to count occurrences of each productId
+            reduce((acc, { productId, name, images }) => {
+                if (!acc[productId]) {
+                    acc[productId] = { count: 0, name, images };
+                }
+                acc[productId].count++;
+                return acc;
+            }, {}),
+            // Convert the result to an array of objects
+            map((counts) => {
+                return Object.keys(counts).map((productId) => ({
+                    productId,
+                    name: counts[productId].name,
+                    images: counts[productId].images,
+                    count: counts[productId].count,
+                }));
+            }),
+        );
     }
 }

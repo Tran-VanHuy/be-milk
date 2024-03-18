@@ -1,16 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { NotificationEntity } from "./notification.schema";
+import { NotificationEntity, NotificationOrderEntity } from "./notification.schema";
 import { Model } from "mongoose";
 import { NotificationDto } from "./dto/notification.dto";
 import { response } from "src/response/response";
 import { UserEntity } from "../user/user.schema";
+import { NotificationOrderDto } from "./dto/notification-order.dto";
 
 @Injectable()
 export class NotificationService {
 
     constructor(@InjectModel(NotificationEntity.name) private notificationModel: Model<NotificationEntity>,
-        @InjectModel(UserEntity.name) private userModel: Model<UserEntity>) { }
+        @InjectModel(UserEntity.name) private userModel: Model<UserEntity>,
+        @InjectModel(NotificationOrderEntity.name) private notificationOrderModel: Model<NotificationOrderEntity>) { }
 
     async getAll(userId: string) {
 
@@ -64,6 +66,56 @@ export class NotificationService {
 
         } catch (error) {
 
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async createNotificationOrder(body: NotificationOrderDto) {
+
+        try {
+
+            const res = await this.notificationOrderModel.create(body)
+            return response(200, res)
+        } catch (error) {
+
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+
+        }
+    }
+
+    async getAllNotificationOrder(userId: string) {
+
+        try {
+            let find = {}
+            const findUser = await this.userModel.findOne({ userId })
+            if (findUser.role !== "ADMIN") {
+
+                find = {
+                    ...find,
+                    userId
+                }
+            } else {
+                find = {
+                    ...find,
+                    userId: "ADMIN"
+                }
+            }
+            const res = await this.notificationOrderModel.find(find).sort({createdAt: -1})
+            return response(200, res)
+        } catch (error) {
+
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+
+        }
+    }
+
+    async checkReadNotiOrder(_id: string) {
+
+        try {
+
+            const res = await this.notificationOrderModel.findByIdAndUpdate(_id, { readed: true })
+            return response(200, res)
+        } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
     }

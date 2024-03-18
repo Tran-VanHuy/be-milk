@@ -63,4 +63,10 @@ export class OrderController {
 
         return await this.orderService.quantityTypeOrder(userId)
     }
+
+    @Get("/bought-product")
+    async bought(@Query("userId") userId: string) {
+
+        return await this.orderService.bought(userId)
+    }
 }

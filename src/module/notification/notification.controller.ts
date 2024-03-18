@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Query, VERSION_NEUTRAL } fr
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { NotificationService } from "./notification.service";
 import { NotificationDto } from "./dto/notification.dto";
+import { NotificationOrderDto } from "./dto/notification-order.dto";
 
 @ApiTags("Thông báo")
 @Controller({
@@ -31,5 +32,23 @@ export class NotifiCationController {
     async delete(@Param("_id") _id: string) {
 
         return await this.notificationService.delete(_id)
+    }
+
+    @Post("/create/order")
+    async createNotificationOrder(@Body() body: NotificationOrderDto) {
+
+        return await this.notificationService.createNotificationOrder(body)
+    }
+
+    @Get("/get/order/:userId")
+    async getAllNotificationOrder(@Param("userId") userId: string) {
+
+        return await this.notificationService.getAllNotificationOrder(userId)
+    }
+
+    @Get("/get/check-read/:_id")
+    async checkReadNotiOrder(@Param("_id") _id: string) {
+
+        return await this.notificationService.checkReadNotiOrder(_id)
     }
 }
