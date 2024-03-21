@@ -14,6 +14,7 @@ import { OrderModule } from './module/order/order.module';
 import { CartModule } from './module/cart/cart.module';
 import { FavouriteModel } from './module/favourite/favourite.module';
 import { NotificationModule } from './module/notification/notification.module';
+import { RatingModule } from './module/rating/rating.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -32,7 +33,8 @@ import { NotificationModule } from './module/notification/notification.module';
     OrderModule,
     CartModule,
     FavouriteModel,
-    NotificationModule
+    NotificationModule,
+    RatingModule
   ]
 })
 export class AppModule { }

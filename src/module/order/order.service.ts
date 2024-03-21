@@ -25,7 +25,7 @@ export class OrderService {
         @InjectModel(NotificationOrderEntity.name) private notificationOrderModel: Model<NotificationOrderEntity>) { }
 
 
-    async getAll(userId: string, type: string) {
+    async getAll(skip: number, limit: number, userId: string, type: string) {
 
         try {
             let find = {};
@@ -48,7 +48,7 @@ export class OrderService {
             const res = await this.orderModel.find(find).populate({
                 path: "orders",
                 model: ItemOrderEntity.name
-            }).sort({ updatedAt: -1 })
+            }).skip(skip *limit).limit(limit).sort({ updatedAt: -1 })
             return response(200, res)
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)

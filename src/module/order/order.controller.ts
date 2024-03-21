@@ -4,6 +4,7 @@ import { OrderService } from "./order.service";
 import { InfoOrderDto, ListInfoOrderDto } from "./dto/info-order.dto";
 import { ArayItemOrderDto, ItemOrderDto } from "./dto/item-order.dto";
 import { ChangeStatusDto } from "./dto/change-status.dto";
+import { Paging } from "src/common/pagination";
 
 @ApiTags("Order")
 @Controller({
@@ -16,12 +17,14 @@ export class OrderController {
 
     constructor(private readonly orderService: OrderService) { }
 
+    @ApiQuery({ name: "skip", required: true, type: Number })
+    @ApiQuery({ name: "limit", required: true, type: Number })
     @ApiQuery({ name: "userId", required: false, type: String })
     @ApiQuery({ name: "type", required: false, type: String })
     @Get()
-    async getAll(@Query("userId") userId: string, @Query("type") type: string) {
+    async getAll(@Query() {skip, limit}: Paging, @Query("userId") userId: string, @Query("type") type: string) {
 
-        return await this.orderService.getAll(userId, type)
+        return await this.orderService.getAll(skip, limit, userId, type)
     }
 
     @Post()

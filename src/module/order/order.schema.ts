@@ -30,9 +30,6 @@ export class OrderEntity {
     @Prop({ type: Number, required: true })
     price: number
 
-    @Prop({ type: Boolean, required: false, default: false })
-    rating: boolean
-
     @Prop({ type: String, required: false })
     createdAt: string
 
@@ -72,6 +69,12 @@ export class ItemOrderEntity {
 
     @Prop({ type: String, required: false })
     szId: string
+
+    @Prop({ type: Boolean, required: false, default: false })
+    rating: boolean
+
+    @Prop({ type: Number, required: false, default: 0 })
+    numberRating: number
 
     @Prop({ type: String, required: false })
     createdAt: string
