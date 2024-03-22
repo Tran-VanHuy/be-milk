@@ -38,7 +38,7 @@ export class CartService {
             const res = await this.cartModel.find({ userId }).populate({
                 path: 'product',
                 model: ProductsEntity.name
-            }).sort({ createdAt: -1 });
+            }).sort({ createdAt: 1 });
 
             const newData = await Promise.resolve(res).then(async (values) => {
 
