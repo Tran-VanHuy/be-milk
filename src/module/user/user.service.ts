@@ -1,15 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { UserDocument, UserEntity } from "./user.schema";
 import { Model } from "mongoose";
 import { UserDto } from "./dto/user.dto";
 import { response } from "src/response/response";
 import { AddressEntity } from "../address/address.schema";
+import { SignInDto } from "./dto/sign-in.dto";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UserService {
 
-    constructor(@InjectModel(UserEntity.name) private userModel: Model<UserDocument>) { }
+    constructor(@InjectModel(UserEntity.name) private userModel: Model<UserDocument>,
+    private jwtServiccee: JwtService) { }
 
     async getAll() {
 
@@ -59,6 +62,27 @@ export class UserService {
         } catch (error) {
 
             return response(500, error);
+        }
+    }
+
+    async signIn(body: SignInDto) {
+
+        try {
+
+            const res = await this.userModel.findOne({ userId: body.userId})
+            if (!res) {
+
+                throw new UnauthorizedException()
+            }
+
+            const payload = {_id: res.role, userId: res.userId, name: res.name, role: res.role}
+            return {
+                status: 200,
+                message: 'Thành công',
+                data: {accessToken: await this.jwtServiccee.signAsync(payload)}
+            }
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
         }
     }
 }

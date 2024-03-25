@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, VERSION_NEUTRAL } from "@nestjs/common";
-import { ApiQuery, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, SetMetadata, UseGuards, VERSION_NEUTRAL } from "@nestjs/common";
+import { ApiBearerAuth, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { BannerService } from "./banner.service";
 import { BannerDto } from "./dto/banner.dto";
 import { Paging } from "src/common/pagination";
+import { RoleGuard } from "src/auth/role.guard";
 
 @ApiTags("Banenr")
 @Controller({
@@ -24,12 +25,16 @@ export class BannerController {
         return await this.bannerService.getAll(skip, limit, status)
     }
 
+    @UseGuards(RoleGuard) // Apply the RoleGuard
+    @SetMetadata('role', 'ADMIN')
     @Post()
     async create(@Body() body: BannerDto) {
 
         return await this.bannerService.create(body)
     }
 
+    @UseGuards(RoleGuard) // Apply the RoleGuard
+    @SetMetadata('role', 'ADMIN')
     @Delete(":_id")
     async delete(@Param("_id") _id: string) {
 
@@ -42,9 +47,10 @@ export class BannerController {
         return await this.bannerService.detail(_id)
     }
 
+    @UseGuards(RoleGuard) // Apply the RoleGuard
+    @SetMetadata('role', 'ADMIN')
     @Put(":_id")
     async update(@Param("_id") _id: string, @Body() body: BannerDto) {
-
         return await this.bannerService.update(_id, body)
     }
 }
