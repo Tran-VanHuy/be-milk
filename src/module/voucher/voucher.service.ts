@@ -4,6 +4,7 @@ import { VoucherEntity } from "./voucher.schema";
 import { Model } from "mongoose";
 import { response } from "src/response/response";
 import { VoucherDto } from "./dto/voucher.dto";
+import { ProductsEntity } from "../products/products.schema";
 
 @Injectable()
 export class VoucherService {
@@ -50,14 +51,40 @@ export class VoucherService {
         }
     }
 
+
     async delete(_id: string) {
 
         try {
 
             const res = await this.voucherModel.findByIdAndDelete(_id);
-            return res;
+            return response(200, res);
         } catch (error) {
-            
+
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async update(_id: string, body: VoucherDto) {
+
+        try {
+
+            const res = await this.voucherModel.findByIdAndUpdate(_id, body);
+            return response(200, res)
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async detail(_id: string) {
+
+        try {
+
+            const res = await this.voucherModel.findById(_id).populate({
+                path: "products",
+                model: ProductsEntity.name
+            });
+            return response(200, res)
+        } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
     }

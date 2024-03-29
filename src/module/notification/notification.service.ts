@@ -100,7 +100,7 @@ export class NotificationService {
                     userId: "ADMIN"
                 }
             }
-            const res = await this.notificationOrderModel.find(find).sort({createdAt: -1})
+            const res = await this.notificationOrderModel.find(find).sort({ createdAt: -1 })
             return response(200, res)
         } catch (error) {
 
@@ -116,6 +116,30 @@ export class NotificationService {
             const res = await this.notificationOrderModel.findByIdAndUpdate(_id, { readed: true })
             return response(200, res)
         } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async detail(_id: string) {
+
+        try {
+
+            const res = await this.notificationModel.findById(_id);
+            return response(200, res)
+        } catch (error) {
+
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async update(_id: string, body: NotificationDto) {
+
+        try {
+
+            const res = await this.notificationModel.findByIdAndUpdate(_id, body);
+            return response(200, res)
+        } catch (error) {
+
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
         }
     }

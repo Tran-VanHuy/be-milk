@@ -398,7 +398,9 @@ export class OrderService {
             const res = await this.orderModel.find(find)
             const ordered = res.filter(item => item.type === "ĐÃ ĐẶT HÀNG").length
             const beingTransported = res.filter(item => item.type === "ĐANG VẬN CHUYỂN").length
-            const shipped = res.filter(item => item.type === "ĐÃ VẬN CHUYỂN").length
+
+            const shipped = (await this.itemOrderModel.find({userId, rating: false})).length
+
 
             const newRes = {
                 ordered,

@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, SetMetadata, UseGuards, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { NotificationService } from "./notification.service";
 import { NotificationDto } from "./dto/notification.dto";
 import { NotificationOrderDto } from "./dto/notification-order.dto";
+import { RoleGuard } from "src/auth/role.guard";
 
 @ApiTags("Thông báo")
 @Controller({
@@ -28,12 +29,16 @@ export class NotifiCationController {
         return await this.notificationService.create(body)
     }
 
+    @UseGuards(RoleGuard) // Apply the RoleGuard
+    @SetMetadata('role', 'ADMIN')
     @Delete(":_id")
     async delete(@Param("_id") _id: string) {
 
         return await this.notificationService.delete(_id)
     }
 
+    @UseGuards(RoleGuard) // Apply the RoleGuard
+    @SetMetadata('role', 'ADMIN')
     @Post("/create/order")
     async createNotificationOrder(@Body() body: NotificationOrderDto) {
 
@@ -50,5 +55,17 @@ export class NotifiCationController {
     async checkReadNotiOrder(@Param("_id") _id: string) {
 
         return await this.notificationService.checkReadNotiOrder(_id)
+    }
+
+    @Get(":_id")
+    async detal(@Param("_id") _id: string) {
+
+        return await this.notificationService.detail(_id)
+    }
+
+    @Put(":_id")
+    async update(@Param("_id") _id: string, @Body() body: NotificationDto) {
+
+        return await this.notificationService.update(_id, body)
     }
 }
