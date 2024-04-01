@@ -1,9 +1,10 @@
-import { Body, Controller, Get, HttpCode, Post, Query, SetMetadata, UseGuards, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Post, Query, Req, SetMetadata, UseGuards, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 import { UserDto } from "./dto/user.dto";
 import { SignInDto } from "./dto/sign-in.dto";
 import { RoleGuard } from "src/auth/role.guard";
+import { AuthGuard } from "src/auth/auth.guard";
 
 @ApiTags("User")
 @Controller({
@@ -43,5 +44,12 @@ export class UserController {
     @Post("/user/sign-in")
     async signIn(@Body() body: SignInDto) {
         return this.userService.signIn(body);
+    }
+
+    @UseGuards(AuthGuard)
+    @Get("/user/change-noti")
+    async changeNoti(@Req() header: any) {
+        
+        return this.userService.changeNoti(header);
     }
 }

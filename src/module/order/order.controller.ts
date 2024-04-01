@@ -72,4 +72,10 @@ export class OrderController {
 
         return await this.orderService.bought(userId)
     }
+
+    @Get("/rating-and-sale")
+    ratingAndSale(@Query("productId") productId: string){
+
+        return this.orderService.ratingAndSale(productId)
+    }
 }

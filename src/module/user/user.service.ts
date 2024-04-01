@@ -7,12 +7,13 @@ import { response } from "src/response/response";
 import { AddressEntity } from "../address/address.schema";
 import { SignInDto } from "./dto/sign-in.dto";
 import { JwtService } from "@nestjs/jwt";
+import { infoUser } from "src/common/infoUser";
 
 @Injectable()
 export class UserService {
 
     constructor(@InjectModel(UserEntity.name) private userModel: Model<UserDocument>,
-    private jwtServiccee: JwtService) { }
+        private jwtServiccee: JwtService) { }
 
     async getAll() {
 
@@ -69,20 +70,35 @@ export class UserService {
 
         try {
 
-            const res = await this.userModel.findOne({ userId: body.userId})
+            const res = await this.userModel.findOne({ userId: body.userId })
             if (!res) {
 
                 throw new UnauthorizedException()
             }
 
-            const payload = {_id: res.role, userId: res.userId, name: res.name, role: res.role}
+            const payload = { _id: res.role, userId: res.userId, name: res.name, role: res.role }
             return {
                 status: 200,
                 message: 'Thành công',
-                data: {accessToken: await this.jwtServiccee.signAsync(payload)}
+                data: { accessToken: await this.jwtServiccee.signAsync(payload) }
             }
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    async changeNoti(req: any) {
+
+        try {
+            const userId = infoUser(req);
+            await this.userModel.findOneAndUpdate({ userId: userId.userId }, { notification: false })
+            return response(200, null)
+
+
+        } catch (error) {
+
+            throw new HttpException(error, HttpStatus.BAD_REQUEST)
+
         }
     }
 }

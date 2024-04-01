@@ -13,6 +13,7 @@ import { Observable, from, map, reduce } from "rxjs";
 import { NotificationOrderEntity } from "../notification/notification.schema";
 import { NotificationOrderDto } from "../notification/dto/notification-order.dto";
 import { formatPrice } from "src/common/format-price";
+import { log } from "console";
 
 @Injectable()
 export class OrderService {
@@ -48,7 +49,7 @@ export class OrderService {
             const res = await this.orderModel.find(find).populate({
                 path: "orders",
                 model: ItemOrderEntity.name
-            }).skip(skip *limit).limit(limit).sort({ updatedAt: -1 })
+            }).skip(skip * limit).limit(limit).sort({ updatedAt: -1 })
             return response(200, res)
         } catch (error) {
             throw new HttpException(error, HttpStatus.BAD_REQUEST)
@@ -395,17 +396,26 @@ export class OrderService {
                     userId
                 }
             }
-            const res = await this.orderModel.find(find)
+            const res = await this.orderModel.find(find).populate({
+                path: "orders",
+                model: ItemOrderEntity.name
+            })
             const ordered = res.filter(item => item.type === "ĐÃ ĐẶT HÀNG").length
             const beingTransported = res.filter(item => item.type === "ĐANG VẬN CHUYỂN").length
 
-            const shipped = (await this.itemOrderModel.find({userId, rating: false})).length
+            const shipped = res.filter(item => item.type === "ĐÃ VẬN CHUYỂN")
+            const countShipped = await Promise.all(shipped).then( values => {
 
+                const rating = values.map(item => item.orders).flat()
+                const filter = rating.filter(item => item.rating !== true).length
 
+                return filter;
+            })
+            
             const newRes = {
                 ordered,
                 beingTransported,
-                shipped
+                shipped: countShipped
             }
 
             return response(200, newRes)
@@ -476,4 +486,30 @@ export class OrderService {
             }),
         );
     }
+
+    async ratingAndSale(productId: string) {
+
+        try {
+            
+            const res = await this.itemOrderModel.find({productId: productId});
+            
+            const rated = res.filter(item => item.rating !== false)
+
+            const numberRating =  rated.map(item => item.numberRating);
+            const totalRating = numberRating.reduce((acc, val) => acc + val, 0);
+            const mediumRating = Math.round(totalRating / numberRating.length)
+            
+            const newRes = {
+
+                sale: res.length,
+                totalRating,
+                mediumRating
+            }
+
+            return response(200, newRes)
+        } catch (error) {
+            
+        }
+    }
+
 }

@@ -23,6 +23,9 @@ export class UserEntity {
 
     @Prop({ required: false, default: "USER", type: String })
     role: string;
+
+    @Prop({ required: false, default: false, type: Boolean })
+    notification: boolean
 }
 
 export const UserTableName = "users";

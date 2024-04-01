@@ -25,7 +25,7 @@ export class NotificationService {
                     users: { $in: [userId] }
                 }
             }
-            const res = await this.notificationModel.find(find);
+            const res = await this.notificationModel.find(find).sort({createdAt: -1});
             return response(200, res)
         } catch (error) {
 
@@ -40,6 +40,13 @@ export class NotificationService {
             let user = [];
             if (body.allUser) {
                 user = await this.userModel.find().select({ userId: 1 });
+                await Promise.all(user).then(values => {
+                    
+                    values.map(async (item)  => {
+
+                        await this.userModel.findByIdAndUpdate(item._id, {notification: true})
+                    })
+                })
             } else {
 
                 user = body.users

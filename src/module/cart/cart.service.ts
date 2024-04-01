@@ -32,13 +32,13 @@ export class CartService {
         }
     }
 
-    async getAll(userId: string) {
+    async getAll(userId: string, skip: number, limit: number) {
 
         try {
             const res = await this.cartModel.find({ userId }).populate({
                 path: 'product',
                 model: ProductsEntity.name
-            }).sort({ createdAt: 1 });
+            }).skip(skip * limit).limit(limit).sort({ createdAt: 1 });
 
             const newData = await Promise.resolve(res).then(async (values) => {
 
