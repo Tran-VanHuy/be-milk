@@ -106,9 +106,18 @@ export class OrderService {
                     readed: false
                 }
 
+                await this.userModel.findOneAndUpdate({ userId: res.userId }, { notification: true })
                 await this.notificationOrderModel.create(bodyNotificationUserOrder)
                 await this.notificationOrderModel.create(bodyNotificationAdminOrder)
 
+                const findUserAdmin = await this.userModel.find({ role: "ADMIN" })
+                await Promise.all(findUserAdmin).then(values => {
+
+                    values.map(async (item) => {
+
+                        await this.userModel.findByIdAndUpdate(item._id, { notification: true })
+                    })
+                })
             }
 
             return response(200, res)
@@ -360,6 +369,15 @@ export class OrderService {
                     await this.notificationOrderModel.create(bodyNotificationUserOrder)
                 }
 
+                await this.userModel.findOneAndUpdate({ userId: res.userId }, { notification: true })
+                const findUserAdmin = await this.userModel.find({ role: "ADMIN" })
+                await Promise.all(findUserAdmin).then(values => {
+
+                    values.map(async (item) => {
+
+                        await this.userModel.findByIdAndUpdate(item._id, { notification: true })
+                    })
+                })
                 return response(200, res)
             } else {
                 throw new HttpException(null, HttpStatus.FORBIDDEN)
@@ -404,14 +422,14 @@ export class OrderService {
             const beingTransported = res.filter(item => item.type === "ĐANG VẬN CHUYỂN").length
 
             const shipped = res.filter(item => item.type === "ĐÃ VẬN CHUYỂN")
-            const countShipped = await Promise.all(shipped).then( values => {
+            const countShipped = await Promise.all(shipped).then(values => {
 
                 const rating = values.map(item => item.orders).flat()
                 const filter = rating.filter(item => item.rating !== true).length
 
                 return filter;
             })
-            
+
             const newRes = {
                 ordered,
                 beingTransported,
@@ -490,15 +508,15 @@ export class OrderService {
     async ratingAndSale(productId: string) {
 
         try {
-            
-            const res = await this.itemOrderModel.find({productId: productId});
-            
+
+            const res = await this.itemOrderModel.find({ productId: productId });
+
             const rated = res.filter(item => item.rating !== false)
 
-            const numberRating =  rated.map(item => item.numberRating);
+            const numberRating = rated.map(item => item.numberRating);
             const totalRating = numberRating.reduce((acc, val) => acc + val, 0);
             const mediumRating = Math.round(totalRating / numberRating.length)
-            
+
             const newRes = {
 
                 sale: res.length,
@@ -508,7 +526,7 @@ export class OrderService {
 
             return response(200, newRes)
         } catch (error) {
-            
+
         }
     }
 
