@@ -26,6 +26,9 @@ export class RatingEntity {
 
     @Prop({ type: Number, required: true })
     rating: number
+
+    @Prop({ type: String, required: false })
+    reply: string
 }
 
 export class Media {

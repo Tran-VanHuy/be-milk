@@ -25,7 +25,7 @@ export class NotificationService {
                     users: { $in: [userId] }
                 }
             }
-            const res = await this.notificationModel.find(find).sort({createdAt: -1});
+            const res = await this.notificationModel.find(find).sort({ createdAt: -1 }).exec();
             return response(200, res)
         } catch (error) {
 
@@ -91,7 +91,6 @@ export class NotificationService {
     }
 
     async getAllNotificationOrder(userId: string) {
-
         try {
             let find = {}
             const findUser = await this.userModel.findOne({ userId })
@@ -107,7 +106,7 @@ export class NotificationService {
                     userId: "ADMIN"
                 }
             }
-            const res = await this.notificationOrderModel.find(find).sort({ createdAt: -1 })
+            const res = await this.notificationOrderModel.find(find).sort({ createdAt: 1 }).exec()
             return response(200, res)
         } catch (error) {
 

@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, Query, VERSION_NEUTRAL } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, SetMetadata, UseGuards, VERSION_NEUTRAL } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { RatingService } from "./rating.service";
 import { RatingDto } from "./dto/rating.dto";
 import { Paging } from "src/common/pagination";
+import { ReplyRatingDto } from "./dto/reply.dto";
+import { RoleGuard } from "src/auth/role.guard";
 
 @ApiTags("Đánh giá")
 @Controller({
@@ -27,6 +29,14 @@ export class RatingController {
     create(@Body() body: RatingDto){
 
         return this.ratingService.create(body)
+    }
+
+    @UseGuards(RoleGuard) // Apply the RoleGuard
+    @SetMetadata('role', 'ADMIN')
+    @Post("/reply")
+    reply(@Body() body: ReplyRatingDto){
+
+        return this.ratingService.reply(body)
     }
 
 }
